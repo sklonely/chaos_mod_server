@@ -62,7 +62,7 @@ def AES_encrypt(data="這是測試用的訊息"):
         use_key = hashlib.sha256(dict1['key'].encode('utf-8')).digest()
         use_key = list(use_key)
         for i in range(32):
-            temp_Um[i] = temp_Um[i] + use_key[i]
+            temp_Um[i] = round(temp_Um[i] + use_key[i],7)
         # print(temp_Um)
     except:
         pass
@@ -111,11 +111,10 @@ def decrypt():
         Y = [random.random(), random.random(), random.random()]
         client = Chaos()
         chck = 0
-        for i in range(5, -1, -1):
+        for i in range(len(temp_Um)-1, -1, -1):
             Y = client.runSlave(2, Y, temp_Um[i])
             if i == 1:
                 chck = client.createUs(Y)
-
         # 判斷有沒有同步
         if round(temp_Um[0] + chck, 6):
             # print(temp_X, Y[0], client.createUs(Y), temp_Um[0] + chck)
@@ -186,3 +185,4 @@ if __name__ == "__main__":
         app.run("0.0.0.0", port)
     except:
         print("退出渾沌加密系統")
+# host = https://chaos-mod-sever.herokuapp.com/
