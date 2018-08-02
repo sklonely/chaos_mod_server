@@ -51,7 +51,7 @@ def encrypt():
 
 @app.route("/AES_encrypt", methods=['POST'])
 def AES_encrypt(data="這是測試用的訊息"):
-    s = time.time()
+    # s = time.time()
     # 初始化加密資料
     temp_Um = copy.deepcopy(Um)
     key = copy.deepcopy(X[0])
@@ -72,34 +72,30 @@ def AES_encrypt(data="這是測試用的訊息"):
     testEN = sendData
     # json 黨製作
     sendData = {'encrypt_text': str(sendData), 'Um': str(temp_Um)}
-    e = time.time()
-    print(e - s)
+    # e = time.time()
+    # print(e - s)
     return json.dumps(sendData)
 
 
 @app.route("/AES_decrypt", methods=['POST'])
 def decrypt():
     # 初始化解碼資料
-    s = time.time()
+    # s = time.time()
     try:
+        # 嘗試
         dict1 = json.loads(request.get_data())
         data = dict1['data']
         data = eval(data)
-        # print(data)
         temp_Um = dict1['Um']
         temp_Um = temp_Um[1:-1].split(", ")
         use_key = hashlib.sha256(dict1['key'].encode('utf-8')).digest()
         use_key = list(use_key)
-        # print(use_key)
+        # 加密Um
         for i in range(len(temp_Um)):
             use_key[i] = float(use_key[i])
             temp_Um[i] = float(temp_Um[i])
             temp_Um[i] -= use_key[i]
-        # print(dict1['key'], dict1['data'], dict1['Um'])
     except:
-        # print("GG")
-        # print(type(data))
-        # print(data)
         print("has error")
         pass
     # print(len(data))
@@ -132,8 +128,8 @@ def decrypt():
     getData = aes.decrypt(data, Y[0])
     # json 檔製作
     getData = {'decrypt_text': str(getData), 'flag': str(async_flag)}
-    e = time.time()
-    print(e - s)
+    # e = time.time()
+    # print(e - s)
     return json.dumps(getData)
 
 
@@ -142,7 +138,7 @@ def chaos():
     sys_chaos = Chaos()
     global X, Um
     X = [random.random(), random.random(), random.random()]
-    Um = []
+    Um = [] 
     for i in range(32):
         Um.append(0)
     Um[0] = sys_chaos.createUm(X)
