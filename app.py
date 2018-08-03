@@ -45,7 +45,6 @@ def hello():
 @app.route("/encrypt")
 def encrypt():
     temp_Um = Um
-
     return ("key: " + str(X[0]) + " Um:" + str(temp_Um))
 
 
@@ -62,7 +61,7 @@ def AES_encrypt(data="這是測試用的訊息"):
         use_key = hashlib.sha256(dict1['key'].encode('utf-8')).digest()
         use_key = list(use_key)
         for i in range(32):
-            temp_Um[i] = round(temp_Um[i] + use_key[i],7)
+            temp_Um[i] = round(temp_Um[i] + use_key[i], 7)
         # print(temp_Um)
     except:
         pass
@@ -107,7 +106,7 @@ def decrypt():
         Y = [random.random(), random.random(), random.random()]
         client = Chaos()
         chck = 0
-        for i in range(len(temp_Um)-1, -1, -1):
+        for i in range(len(temp_Um) - 1, -1, -1):
             Y = client.runSlave(2, Y, temp_Um[i])
             if i == 1:
                 chck = client.createUs(Y)
@@ -138,7 +137,7 @@ def chaos():
     sys_chaos = Chaos()
     global X, Um
     X = [random.random(), random.random(), random.random()]
-    Um = [] 
+    Um = []
     for i in range(32):
         Um.append(0)
     Um[0] = sys_chaos.createUm(X)

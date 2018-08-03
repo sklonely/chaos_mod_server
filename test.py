@@ -49,7 +49,7 @@ def show_data(X, Y, Um, Us, UK, sendData, getData, j):
 tryy = 10
 times = 0
 MaxTimes = 0
-"""
+
 for j in range(tryy):
     Y = [random.random(), random.random(), random.random()]
     for i in range(100):
@@ -69,5 +69,3 @@ for j in range(tryy):
             times += (i + 1)
             break
 print("平均同步次數:", times / tryy, "最大次數:", MaxTimes)
-# a.show()
-"""
