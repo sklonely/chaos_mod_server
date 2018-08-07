@@ -14,6 +14,7 @@ while 1:
         from AESmod import AEScharp
         import random
         import json
+        import rsa
         import time
         import threading
         import copy
@@ -34,11 +35,20 @@ while 1:
 app = Flask(__name__)
 # 變數
 CORS(app)
+RSAauth = 0
 
 
 @app.route("/")
 def hello():
     return str("歡迎來到渾沌加解密測試首頁")
+
+
+@app.route("/RSA_pubkey", methods=['GET'])
+def RSA_pubkey():
+    global RSAauth
+    (pubkey, RSAprivkey) = rsa.newkeys(1024)
+    RSAauth = RSAprivkey
+    return str(pubkey)
 
 
 # @app.route("/encrypt", methods=['POST'])
