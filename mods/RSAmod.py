@@ -24,22 +24,23 @@ def rsaDecrypt(str, pk):
     return con
 
 
-pubkey = 0
-privkey = 0
-print(os.path.abspath('.'))
-with open(os.path.abspath('.') + '\key\public.pem') as publickfile:
-    p = publickfile.read()
-    pubkey = rsa.PublicKey.load_pkcs1(p)
-    print(pubkey)
-with open(os.path.abspath('.') + '\key\private.pem') as privatefile:
-    p = privatefile.read()
-    privkey = rsa.PrivateKey.load_pkcs1(p)
-    print(type(privkey))
+if __name__ == "__main__":
+    pubkey = 0
+    privkey = 0
+    print(os.path.abspath('.'))
+    with open(os.path.abspath('.') + '\key\public.pem') as publickfile:
+        p = publickfile.read()
+        pubkey = rsa.PublicKey.load_pkcs1(p)
+        print(pubkey)
+    with open(os.path.abspath('.') + '\key\private.pem') as privatefile:
+        p = privatefile.read()
+        privkey = rsa.PrivateKey.load_pkcs1(p)
+        print(type(privkey))
 
-message = '1234567890123456789012345678901234567890'
+    message = '1234567890123456789012345678901234567890'
 
-print("明文", message)
-crypto = rsa.encrypt(message.encode('utf-8'), pubkey)
-print("密文", crypto.decode('utf-8', "ignore"))
-message = rsa.decrypt(crypto, privkey).decode('utf-8')
-print("明文", message)
+    print("明文", message)
+    crypto = rsa.encrypt(message.encode('utf-8'), pubkey)
+    print("密文", crypto.decode('utf-8', "ignore"))
+    message = rsa.decrypt(crypto, privkey).decode('utf-8')
+    print("明文", message)
