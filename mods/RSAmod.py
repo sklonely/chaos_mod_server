@@ -36,10 +36,10 @@ with open(os.path.abspath('.') + '\key\private.pem') as privatefile:
     privkey = rsa.PrivateKey.load_pkcs1(p)
     print(type(privkey))
 
-message = 'hello'
+message = '1234567890123456789012345678901234567890'
 
 print("明文", message)
 crypto = rsa.encrypt(message.encode('utf-8'), pubkey)
-print("密文", crypto)
+print("密文", crypto.decode('utf-8', "ignore"))
 message = rsa.decrypt(crypto, privkey).decode('utf-8')
 print("明文", message)

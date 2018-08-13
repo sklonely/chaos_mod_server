@@ -74,11 +74,9 @@ def AES_encrypt(data="這是測試用的訊息"):
             temp_Um[i] = round(temp_Um[i] + use_key[i], 7)
         # print(temp_Um)
     except:
-        pass
+        return str("err: 資料格式不正確，請確認json格式")
     # 加密資料
     sendData = aes.encrypt(data, key)
-    global testEN
-    testEN = sendData
     # json 黨製作
     sendData = {'encrypt_text': str(sendData), 'Um': str(temp_Um)}
     # e = time.time()
@@ -105,9 +103,7 @@ def decrypt():
             temp_Um[i] = float(temp_Um[i])
             temp_Um[i] -= use_key[i]
     except:
-        print("has error")
-        pass
-    # print(len(data))
+        return str("err: 資料格式不正確，請確認json格式")
     # 開始同步
     async_flag = False  # 同步旗標
     times = 0  # 同步失敗次數
@@ -137,8 +133,6 @@ def decrypt():
     getData = aes.decrypt(data, Y[0])
     # json 檔製作
     getData = {'decrypt_text': str(getData), 'flag': str(async_flag)}
-    # e = time.time()
-    # print(e - s)
     return json.dumps(getData)
 
 
@@ -146,20 +140,27 @@ def chaos():
     # 初始化 準備Um buff
     sys_chaos = Chaos()
     global X, Um
-    X = [random.random(), random.random(), random.random()]
+    # X = [random.random(), random.random(), random.random()]
+    X = [0.1, 0.1, 0.1]
     Um = []
     for i in range(32):
         Um.append(0)
     Um[0] = sys_chaos.createUm(X)
     X = sys_chaos.runMaster(0, X)
     # 進入迴圈開始跑渾沌
+    temp = 0
     while 1:
+        s = time.clock()
         for i in range(31, 0, -1):
             Um[i] = Um[i - 1]
         Um[0] = sys_chaos.createUm(X)
         X = sys_chaos.runMaster(1, X)
-        # print(X[0], Um[0])
-        time.sleep(0.001)
+        e = time.clock()
+        if temp == 100:
+            print(X)
+        temp += 1
+
+        # time.sleep(0.001)
 
 
 def show(times=50):
@@ -170,7 +171,7 @@ def show(times=50):
         AES_encrypt()
         time.sleep(.05)
         if (decrypt()[1]):
-            x += 1
+            x += 1 
             print(i, True)
         else:
             print(i, False)
