@@ -76,7 +76,7 @@ def AES_encrypt(data="這是測試用的訊息"):
     except:
         return str("err: 資料格式不正確，請確認json格式")
     # 加密資料
-    sendData = aes.encrypt(data, key)
+    sendData = aes.encrypt_ECB(data, key)
     # json 黨製作
     sendData = {'encrypt_text': str(sendData), 'Um': str(temp_Um)}
     # e = time.time()
@@ -99,9 +99,8 @@ def decrypt():
         use_key = list(use_key)
         # 加密Um
         for i in range(len(temp_Um)):
-            use_key[i] = float(use_key[i])
             temp_Um[i] = float(temp_Um[i])
-            temp_Um[i] -= use_key[i]
+            temp_Um[i] -= float(use_key[i])
     except:
         return str("err: 資料格式不正確，請確認json格式")
     # 開始同步
@@ -130,7 +129,7 @@ def decrypt():
 
     # 解密
     aes = AEScharp()
-    getData = aes.decrypt(data, Y[0])
+    getData = aes.decrypt_ECB(data, Y[0])
     # json 檔製作
     getData = {'decrypt_text': str(getData), 'flag': str(async_flag)}
     return json.dumps(getData)
@@ -148,17 +147,11 @@ def chaos():
     Um[0] = sys_chaos.createUm(X)
     X = sys_chaos.runMaster(0, X)
     # 進入迴圈開始跑渾沌
-    temp = 0
     while 1:
-        s = time.clock()
         for i in range(31, 0, -1):
             Um[i] = Um[i - 1]
         Um[0] = sys_chaos.createUm(X)
         X = sys_chaos.runMaster(1, X)
-        e = time.clock()
-        if temp == 100:
-            print(X)
-        temp += 1
 
         # time.sleep(0.001)
 
@@ -171,7 +164,7 @@ def show(times=50):
         AES_encrypt()
         time.sleep(.05)
         if (decrypt()[1]):
-            x += 1 
+            x += 1
             print(i, True)
         else:
             print(i, False)
@@ -185,10 +178,10 @@ if __name__ == "__main__":
         sys_chaos.setDaemon(True)
         sys_chaos.start()
         print("SYS_Chaos 初始化完成 進入本機伺服器...")
-        # show()
         # AES_encrypt()
         port = int(os.environ.get('PORT', 5000))
         app.run("0.0.0.0", port)
+        # show()
     except:
         print("退出渾沌加密系統")
 # host = https://chaos-mod-sever.herokuapp.com/

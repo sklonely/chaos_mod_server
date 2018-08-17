@@ -3,25 +3,25 @@ import os
 import sys
 
 
-# rsa加密
-def rsaEncrypt(str):
-    # 生成公钥、私钥
-    (pubkey, privkey) = rsa.newkeys(1024)
-    print(pubkey, privkey)
-    print(type(pubkey))
-    # 明文编码格式
-    content = str.encode('utf-8')
-    # 公钥加密
-    crypto = rsa.encrypt(content, pubkey)
-    return (crypto, privkey)
+class RSAtoke():
+    # rsa加密
+    def rsaEncrypt(str):
+        # 生成公钥、私钥
+        (pubkey, privkey) = rsa.newkeys(1024)
+        print(pubkey, privkey)
+        print(type(pubkey))
+        # 明文编码格式
+        content = str.encode('utf-8')
+        # 公钥加密
+        crypto = rsa.encrypt(content, pubkey)
+        return (crypto, privkey)
 
-
-# rsa解密
-def rsaDecrypt(str, pk):
-    # 私钥解密
-    content = rsa.decrypt(str, pk)
-    con = content.decode('utf-8')
-    return con
+    # rsa解密
+    def rsaDecrypt(str, pk):
+        # 私钥解密
+        content = rsa.decrypt(str, pk)
+        con = content.decode('utf-8')
+        return con
 
 
 if __name__ == "__main__":
@@ -38,9 +38,10 @@ if __name__ == "__main__":
         print(type(privkey))
 
     message = '1234567890123456789012345678901234567890'
-
+    RSA = RSAtoke()
     print("明文", message)
     crypto = rsa.encrypt(message.encode('utf-8'), pubkey)
     print("密文", crypto.decode('utf-8', "ignore"))
     message = rsa.decrypt(crypto, privkey).decode('utf-8')
     print("明文", message)
+6
