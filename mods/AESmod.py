@@ -1,5 +1,7 @@
 from Crypto.Cipher import AES
 import hashlib
+from PIL import Image
+import numpy as np
 
 
 class AEScharp():
@@ -20,8 +22,21 @@ class AEScharp():
             key += b' '
         return key
 
-    # 加密
-    def encrypt_CBC(self, data, key, _IV=16 * b'\x00'):
+    # 將圖片轉成　整數陣列　回傳
+    def picture_to_RGB(self, p):
+        im = Image.open(p)
+        array = np.array(im)
+        return array
+
+    def picture_ECB(self, p, key):
+        im = Image.open(p)
+        width = im.size[0]
+        height = im.size[1]
+        im = im.convert('RGB')
+        array = self.picture_to_RGB(self, p)
+
+    # 加密 CBC
+    def encrypt_CBC_speed(self, data, key, _IV=16 * b'\x00'):
         # 處理密鑰
         key = str(key)
         key = hashlib.sha256(key.encode('utf-8')).digest()
@@ -32,8 +47,8 @@ class AEScharp():
         # 加密資料
         return aes.encrypt(data)
 
-    # 解密
-    def decrypt_CBC(self, data, key, _IV=16 * b'\x00'):
+    # 解密 CBC
+    def decrypt_CBC_speed(self, data, key, _IV=16 * b'\x00'):
         # 處理密鑰
         key = str(key)  # 避免近來數值太奇怪 轉成str
         key = hashlib.sha256(key.encode('utf-8')).digest()  # 將key做utf-8解碼成bytes放入hash
@@ -43,11 +58,11 @@ class AEScharp():
         # 將資料轉回utf8
         return data
 
+    # 加密 ECB
     def encrypt_ECB(self, data, key):
         # 處理密鑰
         key = str(key)  # 避免近來數值太奇怪 轉成str
         key = hashlib.sha256(key.encode('utf-8')).digest()  # 將key做utf-8解碼成bytes放入hash
-        print(key)
         aes = AES.new(self.pad_key(key), AES.MODE_ECB)  # 建置AES加密核心 使用key當AESkey 模式ECB
         # 處理資料 將key做utf-8解碼成bytes補足16bits
         data = data.encode(encoding="utf-8")
@@ -55,7 +70,7 @@ class AEScharp():
         # 加密資料
         return aes.encrypt(data)
 
-    # 解密
+    # 解密 ECB
     def decrypt_ECB(self, data, key):
         # 處理密鑰
         key = str(key)  # 避免近來數值太奇怪 轉成str
@@ -63,5 +78,28 @@ class AEScharp():
         aes = AES.new(self.pad_key(key), AES.MODE_ECB)  # 建置AES加密核心 使用key當AESkey 模式ECB
         # 解密資料 將data先解密玩 再用utf-8顯示
         data = str(aes.decrypt(data), encoding='utf-8', errors="ignore")
+        # 將資料轉回utf8
+        return data
+
+    # 加密 ECB
+    def encrypt_ECB_by(self, data, key):
+        # 處理密鑰
+        key = str(key)  # 避免近來數值太奇怪 轉成str
+        key = hashlib.sha256(key.encode('utf-8')).digest()  # 將key做utf-8解碼成bytes放入hash
+        aes = AES.new(self.pad_key(key), AES.MODE_ECB)  # 建置AES加密核心 使用key當AESkey 模式ECB
+        # 處理資料 將key做utf-8解碼成bytes補足16bits
+        # data = data.encode(encoding="utf-8")
+        # data = self.pad(data)
+        # 加密資料
+        return aes.encrypt(data)
+
+    # 解密 ECB
+    def decrypt_ECB_by(self, data, key):
+        # 處理密鑰
+        key = str(key)  # 避免近來數值太奇怪 轉成str
+        key = hashlib.sha256(key.encode('utf-8')).digest()  # 將key做utf-8解碼成bytes放入hash
+        aes = AES.new(self.pad_key(key), AES.MODE_ECB)  # 建置AES加密核心 使用key當AESkey 模式ECB
+        # 解密資料 將data先解密玩 再用utf-8顯示
+        data = aes.decrypt(data)
         # 將資料轉回utf8
         return data
