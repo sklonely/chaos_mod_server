@@ -214,7 +214,7 @@ for i in range(0, 512 * 512 * 3 + 1, 16):
             temp_N.append(s)
             oo.append(s)
         print("圖片加密：", sendData.hex(), sendData_N)
-        print("圖片解密: ", temp.hex(), temp_N)
+        # print("圖片解密: ", temp.hex(), temp_N)
         print("---------------------------------------")
     t = i
 
@@ -223,7 +223,7 @@ ss = chunks(ss, 512)
 oo = chunks(oo, 3)
 oo = chunks(oo, 512)
 print(len(ss))
-#print(ss)
+# print(ss)
 array = np.array(ss)
 im = Image.fromarray(array.astype('uint8'))
 im.save("im.png")
