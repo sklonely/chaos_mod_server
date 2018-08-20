@@ -134,6 +134,13 @@ def decrypt():
     getData = {'decrypt_text': str(getData), 'flag': str(async_flag)}
     return json.dumps(getData)
 
+@app.route("/AES_encrypt_png",methods=['POST'])
+def AES_encrypt_png():
+    pass
+
+@app.route("/AES_decrypt_png",methods=['POST'])
+def AES_decrypt_png():
+    pass
 
 def chaos():
     # 初始化 準備Um buff

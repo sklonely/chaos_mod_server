@@ -39,7 +39,7 @@ def image_to_base64(image_path):
 
 
 def base64_to_image(base64_str, image_path=None):
-    base64_data = base64_str.replace("20", "")
+    base64_data = re.sub('^data:image/.+;base64,', '', base64_str)
     base64_data = bytes.fromhex(base64_data)
     byte_data = base64.b64decode(base64_data)
     image_data = BytesIO(byte_data)
@@ -68,24 +68,23 @@ def conv(text, lenth):
 
 
 aes = AEScharp()
-st = image_to_base64('lena.png')
+st = image_to_base64('g:/我的云端硬盘/程式/python/chaos_mod_sever/lena.png')
 ssst = st
 st = conv(st, 16)
 
 TT = ""
 TS = ""
 # senddata = aes.encrypt_ECB_by(st, "12")
-for i in st:
-    senddata = aes.encrypt_ECB_by(i, "12")
-    TS += senddata.hex()
-    print("圖片密文：", senddata.hex())
-    getdata = aes.decrypt_ECB_by(senddata, "12")
-    TT += getdata.hex()
-    print("圖片明文：", getdata.hex())
+# for i in st:
+#     senddata = aes.encrypt_ECB_by(i, "12")
+#     TS += senddata.hex()
+#     print("圖片密文：", senddata.hex())
+#     getdata = aes.decrypt_ECB_by(senddata, "12")
+#     TT += getdata.hex()
+#     print("圖片明文：", getdata.hex())
 
 # print(i.hex())
 print(type(bytes.fromhex(TS)))
-base64_to_image(TS, "im.png")
-TS = base64.b64encode(bytes.fromhex(TS))
-print(type(TS))
-
+print(base64_to_image((eval(str(ssst)).hex())))
+print(type(str(ssst)))
+print(type(eval(str(ssst))))
