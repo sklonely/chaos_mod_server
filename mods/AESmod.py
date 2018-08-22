@@ -23,8 +23,7 @@ class AEScharp():
         return key
 
     # 將圖片轉成　整數陣列　回傳
-    def picture_to_RGB(self, p):
-        im = Image.open(p)
+    def picture_to_RGB(self, im):
         array = np.array(im)
         return array
 

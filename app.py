@@ -12,6 +12,7 @@ while 1:
         from flask_cors import CORS
         from HENMAP_chaos_model import Chaos
         from AESmod import AEScharp
+        import PNG_io
         import random
         import json
         import rsa
@@ -19,6 +20,8 @@ while 1:
         import threading
         import copy
         import hashlib
+        from PIL import Image
+        import numpy as np
     except (ModuleNotFoundError, ImportError):  # python import error
         err = str(sys.exc_info()[1])[17:-1]
         if (lestModName != err):
@@ -134,13 +137,55 @@ def decrypt():
     getData = {'decrypt_text': str(getData), 'flag': str(async_flag)}
     return json.dumps(getData)
 
-@app.route("/AES_encrypt_png",methods=['POST'])
-def AES_encrypt_png():
-    pass
 
-@app.route("/AES_decrypt_png",methods=['POST'])
+# st type: base64 str
+@app.route("/AES_encrypt_png", methods=['POST'])
+def AES_encrypt_png():
+    # 資料判斷
+    dict1 = json.loads(request.get_data())
+    st = eval(dict1['data'])
+    try:
+        img = PNG_io.base64_to_image(st.hex())
+        img.save("png/555.png")
+        st = PNG_io.image_to_base64(img)
+        st = PNG_io.conv(st, 16)
+    except TypeError:
+        return str("需傳送base64後的圖片檔")
+
+    # 基本圖片判斷
+    (W, H) = img.size
+    if W % 16 and H % 16:
+        return str("圖片寬高必須能被16整除")
+
+    # 開始加密-資料準備階段
+    temp_Um = copy.deepcopy(Um)  # Um
+    key = copy.deepcopy(X)  # key
+    aes = AEScharp()  # aes宣告
+    # 開始加密-加密階段
+    senddata_hex = ""
+    for i in st:
+        senddata = aes.encrypt_ECB_by(i, key[0])
+        senddata_hex += senddata.hex()
+
+    img_array = []
+    for i in bytes.fromhex(senddata_hex):
+        img_array.append(i)
+    img_array = PNG_io.chunks(img_array, 3)
+    img_size = int(len(img_array)**0.5)
+    img_array = PNG_io.chunks(img_array, img_size)
+    if len(img_array) > img_size:
+        img_array = img_array[:img_size]
+
+    img_array = np.array(img_array).astype('uint8')
+    im = Image.fromarray(img_array)
+    im.save("png/im.png")
+    return str(PNG_io.image_to_base64(img))
+
+
+@app.route("/AES_decrypt_png", methods=['POST'])
 def AES_decrypt_png():
     pass
+
 
 def chaos():
     # 初始化 準備Um buff

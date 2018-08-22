@@ -203,7 +203,7 @@ for i in range(0, W * H * 3 + 1, 16):
                 temp += hex(array[y])[2:]
         # print("圖片原始：", bytes.fromhex(temp).hex(), array[t:i])
         #  bytes.fromhex(temp),
-        print(bytes.fromhex(temp).hex())
+        print(len(bytes.fromhex(temp)))
         sendData = aes.encrypt_ECB_by(bytes.fromhex(temp), X[0])
         temp = aes.decrypt_ECB_by(sendData, X[0])
         soso += 1
