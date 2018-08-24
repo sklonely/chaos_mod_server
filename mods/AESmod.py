@@ -27,13 +27,6 @@ class AEScharp():
         array = np.array(im)
         return array
 
-    def picture_ECB(self, p, key):
-        im = Image.open(p)
-        width = im.size[0]
-        height = im.size[1]
-        im = im.convert('RGB')
-        array = self.picture_to_RGB(self, p)
-
     # 加密 CBC
     def encrypt_CBC_speed(self, data, key, _IV=16 * b'\x00'):
         # 處理密鑰
