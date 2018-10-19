@@ -96,7 +96,6 @@ def chunks(lis, n):
     return temp
 
 
-# print(i.hex())
 if __name__ == "__main__":
     aes = AEScharp()
     try:
@@ -112,41 +111,3 @@ if __name__ == "__main__":
     print("[測試]:內存圖片   to  base64_str", ":  ", st[:50])
     st = base64_to_image(st.hex())
     print("[測試]:base64_str to  圖片型態", "  :  ", st)
-    """
-    st = image_to_base64(st)
-    st = conv(st, 16)
-    TT = ""
-    TS = ""
-    for i in st:
-        senddata = aes.encrypt_ECB_by(i, "12")
-        TS += senddata.hex()
-        print("圖片原文：", i.hex())
-        print("圖片密文：", senddata.hex())
-        getdata = aes.decrypt_ECB_by(senddata, "12")
-        TT += getdata.hex()
-        print("圖片明文：", getdata.hex())
-    """
-    """
-    print("----")
-    xx = []
-    for i in bytes.fromhex(TS):
-        xx.append(i)
-    print(len(xx))
-    ss = chunks(xx, 3)
-    print(int(len(ss)**0.5))
-    qr = int(len(ss)**0.5)
-    ss = chunks(ss, qr)
-    if len(ss) > qr:
-        print("之前", len(ss))
-        ss = ss[:qr]
-        print("之後", len(ss))
-    s = np.array(ss).astype('uint8')
-    print(s)
-    im = Image.fromarray(s)
-    im.save("im.png")
-    """
-    # print(s)
-    # print(type(bytes.fromhex(TS)))
-    # print(base64_to_image((eval(str(ssst)).hex())))
-    # print(type(str(ssst)))
-    # print(type(eval(str(ssst))))

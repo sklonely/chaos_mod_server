@@ -39,9 +39,11 @@ app = Flask(__name__)
 # 變數
 CORS(app)
 
+
 @app.route("/")  # 測試用
 def hello():
     return str("歡迎來到渾沌加解密測試首頁")
+
 
 @app.route("/key")
 def encrypt():
@@ -67,12 +69,12 @@ def AES_encrypt(data="這是測試用的訊息"):
     except:
         return str("err: 資料格式不正確，請確認json格式")
     # 加密資料
-    sendData = aes.encrypt_ECB(data, round(key,6))
+    sendData = aes.encrypt_ECB(data, round(key, 6))
     # json 黨製作
     sendData = {'encrypt_text': str(sendData), 'Um': str(temp_Um)}
     # e = time.time()
     # print(e - s)
-    print("e_key=", key)
+    print("e_key=", key)# DeBUG用
     return json.dumps(sendData)
 
 
@@ -81,7 +83,7 @@ def decrypt():
     # 初始化解碼資料
     # s = time.time()
     try:
-        # 嘗試
+        # 嘗試解析資料
         dict1 = json.loads(request.get_data())
         data = dict1['data']
         data = eval(data)
@@ -102,29 +104,26 @@ def decrypt():
 
         Y = [random.random(), random.random(), random.random()]
         client = Chaos()
-        chck = 0
+        US = 0
         for i in range(len(temp_Um) - 1, -1, -1):
             Y = client.runSlave(2, Y, temp_Um[i])
             if i == 1:
-                chck = client.createUs(Y)
+                US = client.createUs(Y)
         # 判斷有沒有同步
-        if round(temp_Um[0] + chck, 6):
-            # print(temp_X, Y[0], client.createUs(Y), temp_Um[0] + chck)
+        if round(temp_Um[0] + US, 6):  # 計算UK 若是0表示同步 反知
             async_flag = False
-            if times > 12:
+            if times > 12:  # 嘗試同步最高次數
                 break
             times += 1
-            # print(round(temp_Um[0] + chck, 6))
-
-        else:
+        else:  # 同步成功
             async_flag = True
 
     # 解密
     aes = AEScharp()
-    getData = aes.decrypt_ECB(data, round(Y[0],6))
+    getData = aes.decrypt_ECB(data, round(Y[0], 6))
     # json 檔製作
     getData = {'decrypt_text': str(getData), 'flag': str(async_flag)}
-    print("d_key=", Y[0])
+    print("d_key=", Y[0]) # DeBUG用
     return json.dumps(getData)
 
 
@@ -171,12 +170,12 @@ def AES_encrypt_png():
     im.save("png/im.png")
     return str(PNG_io.image_to_base64(img))
 
+
 def chaos():
     # 初始化 準備Um buff
     sys_chaos = Chaos()
     global X, Um
-    # X = [random.random(), random.random(), random.random()]
-    X = [0.1, 0.1, 0.1]
+    X = [random.random(), random.random(), random.random()]
     Um = []
     for i in range(32):
         Um.append(0)
@@ -189,6 +188,7 @@ def chaos():
         Um[0] = sys_chaos.createUm(X)
         X = sys_chaos.runMaster(1, X)
         time.sleep(0.001)
+
 
 if __name__ == "__main__":
     try:
