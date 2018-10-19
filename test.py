@@ -18,7 +18,7 @@ getData = ''
 impData = '11111111'
 key = hashlib.sha256("dwdwd4".encode('utf-8')).digest()
 data = hashlib.sha256(impData.encode('utf-8')).digest()
-print(data)
+#print(data)
 """
 print("key:", key, len(key))
 print("data:", data, len(data))
@@ -66,171 +66,178 @@ MaxTimes = 0
 
 for j in range(tryy):
     Y = [random.random(), random.random(), random.random()]
-    for i in range(100):
+    for i in range(10000):
         UK = a.createUk(X, Y)
         Um = a.createUm(X)
         X = a.runMaster(i, X)
-        sendData = aes.encrypt_ECB(impData, X[0])
+        #sendData = aes.encrypt_ECB(impData, X[0])
         # print(int(impData.encode('utf-8')))
         Us = b.createUs(Y)
-        Y = b.runSlave(i, Y, Um)
-        getData = aes.decrypt_ECB(bytes.fromhex(sendData.hex()), Y[0])
+        if UK != 0:
+            Y = b.runSlave(i, Y, Um)
+            print("XXX----------------------------------------------")# 沒同步
+        else:
+            Y = b.runSlave(i, Y, -b.createUs(Y))
+            print("OOO----------------------------------------------")# 同步了
+        
+        print(X[0]-Y[0])
+        #getData = aes.decrypt_ECB(bytes.fromhex(sendData.hex()), Y[0])
         # show data
-        if (show_data(X, Y, Um, Us, UK, sendData, getData, j)):
-            print("----------------------------------------------")
-            print("同步所需次數", i + 1)
-            if (MaxTimes <= i):
-                MaxTimes = i
-            times += (i + 1)
-            break
+        # if (show_data(X, Y, Um, Us, UK, sendData, getData, j)):
+        #     print("----------------------------------------------")
+        #     print("同步所需次數", i + 1)
+        #     if (MaxTimes <= i):
+        #         MaxTimes = i
+        #     times += (i + 1)
+        #     break
 print("平均同步次數:", times / tryy, "最大次數:", MaxTimes)
 
 
-# a.show()
-def conv(text, lenth):
-    new_text = []
-    li = 0
-    maxl = len(text)
-    i = 0
+# # a.show()
+# def conv(text, lenth):
+#     new_text = []
+#     li = 0
+#     maxl = len(text)
+#     i = 0
 
-    for i in range(lenth, maxl + 1, lenth):
-        new_text.append(text[li:i])
-        li = i
+#     for i in range(lenth, maxl + 1, lenth):
+#         new_text.append(text[li:i])
+#         li = i
 
-    if i != maxl:
-        text = text[i:]
-        for j in range(lenth - (maxl - i)):
-            text += b" "
-        new_text.append(text)
-    return new_text
-
-
-"""
-"""
-"""
-def pad_len():
-    def conv(text, lenth):
-        new_text = []
-        li = 0
-        maxl = len(text)
-        i = 0
-
-        for i in range(lenth, maxl + 1, lenth):
-            new_text.append(text[li:i])
-            li = i
-
-        if i != maxl:
-            text = text[i:]
-            for j in range(lenth - (maxl - i)):
-                text += b" "
-            new_text.append(text)
-        return new_text
+#     if i != maxl:
+#         text = text[i:]
+#         for j in range(lenth - (maxl - i)):
+#             text += b" "
+#         new_text.append(text)
+#     return new_text
 
 
-    # Y = [random.random(), random.random(), random.random()]
-    text = "111111111111111111111111111111112222"
-    text = text.encode('utf-8')
-    text = conv(text, 32)
-    print(text)
-    i = 0
-    getData = ""
-    for j in text:
-        X = a.runMaster(i, X)
-        # print(len(j))
-        sendData = aes.encrypt_ECB_by(j, X[0])
-        temp = aes.decrypt_ECB(sendData, X[0])
-        print(temp)
-        print(sendData.hex())
-        getData += temp
-        i += 1
-    print(getData)
-"""
-"""
-for i in range(100):
-        UK = a.createUk(X, Y)
-        Um = a.createUm(X)
-        X = a.runMaster(i, X)
-        sendData = aes.encrypt_ECB(impData, X[0])
-        # print(int(impData.encode('utf-8')))
-        Us = b.createUs(Y)
-        Y = b.runSlave(i, Y, Um)
-        getData = aes.decrypt_ECB(bytes.fromhex(sendData.hex()), Y[0])
-        # show data
-        if (show_data(X, Y, Um, Us, UK, sendData, getData, j)):
-            print("----------------------------------------------")
-            print("同步所需次數", i + 1)
-            if (MaxTimes <= i):
-                MaxTimes = i
-            times += (i + 1)
-            break
-            """
+# """
+# """
+# """
+# def pad_len():
+#     def conv(text, lenth):
+#         new_text = []
+#         li = 0
+#         maxl = len(text)
+#         i = 0
+
+#         for i in range(lenth, maxl + 1, lenth):
+#             new_text.append(text[li:i])
+#             li = i
+
+#         if i != maxl:
+#             text = text[i:]
+#             for j in range(lenth - (maxl - i)):
+#                 text += b" "
+#             new_text.append(text)
+#         return new_text
 
 
-def chunks(l, n):
-    temp = list(l[i:i + n] for i in range(0, len(l), n))
-    return temp
+#     # Y = [random.random(), random.random(), random.random()]
+#     text = "111111111111111111111111111111112222"
+#     text = text.encode('utf-8')
+#     text = conv(text, 32)
+#     print(text)
+#     i = 0
+#     getData = ""
+#     for j in text:
+#         X = a.runMaster(i, X)
+#         # print(len(j))
+#         sendData = aes.encrypt_ECB_by(j, X[0])
+#         temp = aes.decrypt_ECB(sendData, X[0])
+#         print(temp)
+#         print(sendData.hex())
+#         getData += temp
+#         i += 1
+#     print(getData)
+# """
+# """
+# for i in range(100):
+#         UK = a.createUk(X, Y)
+#         Um = a.createUm(X)
+#         X = a.runMaster(i, X)
+#         sendData = aes.encrypt_ECB(impData, X[0])
+#         # print(int(impData.encode('utf-8')))
+#         Us = b.createUs(Y)
+#         Y = b.runSlave(i, Y, Um)
+#         getData = aes.decrypt_ECB(bytes.fromhex(sendData.hex()), Y[0])
+#         # show data
+#         if (show_data(X, Y, Um, Us, UK, sendData, getData, j)):
+#             print("----------------------------------------------")
+#             print("同步所需次數", i + 1)
+#             if (MaxTimes <= i):
+#                 MaxTimes = i
+#             times += (i + 1)
+#             break
+#             """
 
 
-from PIL import Image
-from PIL import ImageDraw
-import numpy as np
-array = aes.picture_to_RGB(Image.open('lena.png'))
-tt = []
-(W, H) = (512, 512)
-for x in range(W):
-    for y in range(H):
-        for c in range(3):
-            tt.append(array[x][y][c])
+# def chunks(l, n):
+#     temp = list(l[i:i + n] for i in range(0, len(l), n))
+#     return temp
 
-array = tt
 
-i = 0
-t = 0
-tt = 0
-ss = []
-oo = []
-soso = 0
-for i in range(0, W * H * 3 + 1, 16):
-    if i != 0:
-        tt += 1
-        if tt > 33:
-            break
-        temp = ""
-        for y in range(t, i):
-            if array[y] < 16:
-                temp += "0" + hex(array[y])[2:]
-            else:
-                temp += hex(array[y])[2:]
-        # print("圖片原始：", bytes.fromhex(temp).hex(), array[t:i])
-        #  bytes.fromhex(temp),
-        print(bytes.fromhex(temp).hex())
-        sendData = aes.encrypt_ECB_by(bytes.fromhex(temp), X[0])
-        temp = aes.decrypt_ECB_by(sendData, X[0])
-        soso += 1
-        sendData_N = []
-        temp_N = []
-        for s in sendData:
-            sendData_N.append(s)
-            ss.append(s)
-        for s in temp:
-            temp_N.append(s)
-            oo.append(s)
-        print("圖片加密：", sendData.hex(), sendData_N)
-        # print("圖片解密: ", temp.hex(), temp_N)
-        # print("---------------------------------------")
-    t = i
+# from PIL import Image
+# from PIL import ImageDraw
+# import numpy as np
+# array = aes.picture_to_RGB(Image.open('lena.png'))
+# tt = []
+# (W, H) = (512, 512)
+# for x in range(W):
+#     for y in range(H):
+#         for c in range(3):
+#             tt.append(array[x][y][c])
 
-ss = chunks(ss, 3)
-ss = chunks(ss, 512)
-oo = chunks(oo, 3)
-oo = chunks(oo, 512)
-print(len(ss))
-# print(ss)
-array = np.array(ss)
-im = Image.fromarray(array.astype('uint8'))
-im.save("im.png")
-print(ss[0][0], ss[1][0])
-array = np.array(oo)
-im = Image.fromarray(array.astype('uint8'))
-im.save("img.png")
-print(soso)
+# array = tt
+
+# i = 0
+# t = 0
+# tt = 0
+# ss = []
+# oo = []
+# soso = 0
+# for i in range(0, W * H * 3 + 1, 16):
+#     if i != 0:
+#         tt += 1
+#         if tt > 33:
+#             break
+#         temp = ""
+#         for y in range(t, i):
+#             if array[y] < 16:
+#                 temp += "0" + hex(array[y])[2:]
+#             else:
+#                 temp += hex(array[y])[2:]
+#         # print("圖片原始：", bytes.fromhex(temp).hex(), array[t:i])
+#         #  bytes.fromhex(temp),
+#         print(bytes.fromhex(temp).hex())
+#         sendData = aes.encrypt_ECB_by(bytes.fromhex(temp), X[0])
+#         temp = aes.decrypt_ECB_by(sendData, X[0])
+#         soso += 1
+#         sendData_N = []
+#         temp_N = []
+#         for s in sendData:
+#             sendData_N.append(s)
+#             ss.append(s)
+#         for s in temp:
+#             temp_N.append(s)
+#             oo.append(s)
+#         print("圖片加密：", sendData.hex(), sendData_N)
+#         # print("圖片解密: ", temp.hex(), temp_N)
+#         # print("---------------------------------------")
+#     t = i
+
+# ss = chunks(ss, 3)
+# ss = chunks(ss, 512)
+# oo = chunks(oo, 3)
+# oo = chunks(oo, 512)
+# print(len(ss))
+# # print(ss)
+# array = np.array(ss)
+# im = Image.fromarray(array.astype('uint8'))
+# im.save("im.png")
+# print(ss[0][0], ss[1][0])
+# array = np.array(oo)
+# im = Image.fromarray(array.astype('uint8'))
+# im.save("img.png")
+# print(soso)

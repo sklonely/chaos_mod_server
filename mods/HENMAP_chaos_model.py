@@ -65,7 +65,7 @@ class Chaos():
             x[1] = self.ax[1] * x[1] + self.dx[1]
             x[2] = self.ax[2] * x[2] + self.dx[2]
         # 混沌原式計算
-        t.append(round(g[0] * (x[1] * x[1]) + g[1] * x[1] + g[2] * x[2] + g[3], 6))
+        t.append(round(g[0] * (x[1] * x[1]) + g[1] * x[1] + g[2] * x[2] + g[3], 16))
         t.append(round(h[0] * x[0] + h[1], 6))
         t.append(round(j[0] * x[1] + j[1], 6))
 
@@ -79,7 +79,7 @@ class Chaos():
     def runSlave(self, k, y, Um):
         t = self.runChaos(k, y)
         if (k > 1):
-            t[0] = round(t[0] + self.createUs(y) + Um, 6)
+            t[0] = t[0] + self.createUs(y) + Um
         return t
 
     # UK值
@@ -113,8 +113,8 @@ class Chaos():
 
     # 觀看有沒有同步
     def checkSync(self, Us, Um):
-        Um = round(Um, 4)
-        Us = round(Us, 4)
+        Um = round(Um, 6)
+        Us = round(Us, 6)
 
         if (Us + Um) == 0:
             self.count += 1

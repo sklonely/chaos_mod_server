@@ -38,24 +38,12 @@ while 1:
 app = Flask(__name__)
 # 變數
 CORS(app)
-RSAauth = 0
 
-
-@app.route("/")
+@app.route("/")  # 測試用
 def hello():
     return str("歡迎來到渾沌加解密測試首頁")
 
-
-@app.route("/RSA_pubkey", methods=['GET'])
-def RSA_pubkey():
-    global RSAauth
-    (pubkey, RSAprivkey) = rsa.newkeys(1024)
-    RSAauth = RSAprivkey
-    return str(pubkey)
-
-
-# @app.route("/encrypt", methods=['POST'])
-@app.route("/encrypt")
+@app.route("/key")
 def encrypt():
     temp_Um = Um
     return ("key: " + str(X[0]) + " Um:" + str(temp_Um))
@@ -79,11 +67,12 @@ def AES_encrypt(data="這是測試用的訊息"):
     except:
         return str("err: 資料格式不正確，請確認json格式")
     # 加密資料
-    sendData = aes.encrypt_ECB(data, key)
+    sendData = aes.encrypt_ECB(data, round(key,6))
     # json 黨製作
     sendData = {'encrypt_text': str(sendData), 'Um': str(temp_Um)}
     # e = time.time()
     # print(e - s)
+    print("e_key=", key)
     return json.dumps(sendData)
 
 
@@ -125,16 +114,17 @@ def decrypt():
             if times > 12:
                 break
             times += 1
-            print(round(temp_Um[0] + chck, 6))
+            # print(round(temp_Um[0] + chck, 6))
 
         else:
             async_flag = True
 
     # 解密
     aes = AEScharp()
-    getData = aes.decrypt_ECB(data, Y[0])
+    getData = aes.decrypt_ECB(data, round(Y[0],6))
     # json 檔製作
     getData = {'decrypt_text': str(getData), 'flag': str(async_flag)}
+    print("d_key=", Y[0])
     return json.dumps(getData)
 
 
@@ -181,12 +171,6 @@ def AES_encrypt_png():
     im.save("png/im.png")
     return str(PNG_io.image_to_base64(img))
 
-
-@app.route("/AES_decrypt_png", methods=['POST'])
-def AES_decrypt_png():
-    pass
-
-
 def chaos():
     # 初始化 準備Um buff
     sys_chaos = Chaos()
@@ -204,24 +188,7 @@ def chaos():
             Um[i] = Um[i - 1]
         Um[0] = sys_chaos.createUm(X)
         X = sys_chaos.runMaster(1, X)
-
-        # time.sleep(0.001)
-
-
-def show(times=50):
-    # 測試寒士
-    time.sleep(.2)
-    x = 0
-    for i in range(times):
-        AES_encrypt()
-        time.sleep(.05)
-        if (decrypt()[1]):
-            x += 1
-            print(i, True)
-        else:
-            print(i, False)
-    print("成功:", x, "失敗:", times - x, "同步率:", (x / times) * 100, "%")
-
+        time.sleep(0.001)
 
 if __name__ == "__main__":
     try:
@@ -232,6 +199,7 @@ if __name__ == "__main__":
         print("SYS_Chaos 初始化完成 進入本機伺服器...")
         # AES_encrypt()
         port = int(os.environ.get('PORT', 5000))
+        print(port)
         app.run("0.0.0.0", port)
         # show()
     except:
